@@ -1,9 +1,10 @@
 var pCount = 0;
+var lpCount = 0;
 
 
 $(document).ready(function () {
     polling_poll();
-    //poll();
+    long_polling_poll();
 });
 
 function polling_poll () {
@@ -29,41 +30,29 @@ function polling_poll () {
 }
 
 function long_polling_poll () {
-    var params = {
-        count: lpCount
-    };
-
-
+    console.log("yolo");
 
     $.ajax({
-     url : 'http://127.0.0.1:3000/long_polling/poll/',
-     type : 'POST', // Le type de la requête HTTP, ici devenu POST
-       data : JSON.stringify(params),
+     url : 'http://127.0.0.1:3000/long_polling_poll/',
+     type : 'GET',
+       data : {count: lpCount},
        dataType : 'json',
        success: function(data, status){
-           var mydata = data;
-           lpCount = mydata.count;
-           console.log(lpCount);
-           var elem = $('#long-polling-output');
-           elem.text(elem.text() + mydata.foo);
-           poll();
+           if (data.count){
+               lpCount = data.count;
+               console.log(lpCount);
+               var elem = $('#long-polling-output');
+               elem.append('<div class="panel-body chat-messages" >' + data.message + '</div>');}
+           long_polling_poll();
        },
        error: function  (resultat, status, error) {
-           //console.log(resultat.statusText);
+           console.log(resultat.statusText);
        }
    });
-}
+};
 
-$('#long-polling-input').keypress(function(event){
-    var keycode = (event.keyCode ? event.keyCode : event.which);
-    if(keycode == '13'){
-        sendMessageLP();
-    }
-});
 
-$('#long-polling-button').click(function () {
-    sendMessageLP();
-});
+
 
 $('#polling-input').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -78,6 +67,17 @@ $('#polling-button').click(function () {
 });
 
 
+$('#long-polling-input').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+        long_polling_send_message();
+    }
+});
+
+$('#long-polling-button').click(function () {
+    long_polling_send_message();
+});
+
 
 function polling_send_message () {
     var pmsg = $('#polling-input').val();
@@ -85,6 +85,17 @@ function polling_send_message () {
 
     $.ajax({
        url : 'http://127.0.0.1:3000/polling_send/',
+       type : 'POST', // Le type de la requête HTTP, ici devenu POST
+       data : {pmsg: pmsg},
+    });
+}
+
+function long_polling_send_message () {
+    var pmsg = $('#long-polling-input').val();
+    console.log($('#long-polling-input').val())
+
+    $.ajax({
+       url : 'http://127.0.0.1:3000/long_polling_send/',
        type : 'POST', // Le type de la requête HTTP, ici devenu POST
        data : {pmsg: pmsg},
     });
