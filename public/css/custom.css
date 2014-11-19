@@ -1,0 +1,12 @@
+body {
+  padding-top: 50px;
+}
+
+.chat-well {
+    overflow: auto;
+    height: 300px;
+}
+.chat-messages {
+
+    background-color: white;
+}
