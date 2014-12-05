@@ -49,10 +49,19 @@ app.get('/long_polling_poll/', function(req, res) {
     };
 })
 
+
 //Push
 io.on('connection', function(socket){
   console.log('a user connected');
+
+    socket.on('push_send', function(msg) {
+        console.log('recieving push sent message');
+        messages.push(msg);
+        push_new_message(msg);
+    });
+
 });
+
 
 /*
  * Sending operations for all types
@@ -63,7 +72,8 @@ app.post('/polling_send/', function(req, res) {
     var msg = req.body.pmsg;
     messages.push(msg);
     res.end();
-})
+    push_new_message(msg);
+});
 
 
 // Long polling
@@ -71,6 +81,11 @@ app.post('/long_polling_send/', function(req, res) {
     var msg = req.body.pmsg;
     messages.push(msg);
     res.end();
+    long_polling_send();
+    push_new_message(msg);
+    });
+
+function long_polling_send () {
     while (requests.length){
         var client = requests.pop()
         var res = client['res'];
@@ -84,7 +99,14 @@ app.post('/long_polling_send/', function(req, res) {
             res.send({});
         };
     };
-})
+}
 
-//Push
+//push
+function push_new_message(msg) {
+    io.emit('chat_message', msg);
+    console.log('Jenvoi le message à tous');
+    long_polling_send();
+};
+
+
 
