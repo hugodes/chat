@@ -25,7 +25,7 @@
         </div>
       </div>
     </nav>
-
+  <div class="container">
     <div class="col-md-4 col-sm-6 col-xs-12">
       <h1 class="text-center">Polling</h1>
       <div class="well chat-well" id="polling-output">
@@ -53,13 +53,29 @@
       </div><!-- /input-group -->
     </div>
 
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <h1 class="text-center">Push</h1>
+      <div class="well chat-well">
+        <div class="panel-body chat-messages" id="push-output">
+        </div>
+      </div>
+      <div class="input-group">
+        <input id="push-input" type="text" class="form-control">
+        <span class="input-group-btn">
+          <button id="push-button" class="btn btn-default" type="button">Send</button>
+        </span>
+      </div><!-- /input-group -->
+    </div>
+
 
     </div><!-- /.container -->
+
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/js/bootstrap.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/custom.js"></script>
 
   </body>

@@ -1,5 +1,8 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+
 var messages = ['Welcome to the server:']
 var bodyParser = require('body-parser')
 var requests = [];
@@ -12,9 +15,14 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use(express.static(__dirname + '/public'));
 
+
+/*
+ * Polling operations for all types
+*/
+
+//polling
 app.get('/polling_poll/', function(req, res) {
     var reqCount = parseInt(req.query.count);
-    console.log(reqCount);
     if (reqCount < messages.length) {
         res.send({
             count: reqCount+1,
@@ -25,10 +33,9 @@ app.get('/polling_poll/', function(req, res) {
     };
 })
 
+// long polling
 app.get('/long_polling_poll/', function(req, res) {
-    console.log("Im here");
     var reqCount = parseInt(req.query.count);
-    console.log(reqCount);
     if (reqCount < messages.length) {
         res.send({
             count: reqCount+1,
@@ -42,6 +49,24 @@ app.get('/long_polling_poll/', function(req, res) {
     };
 })
 
+//Push
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
+
+/*
+ * Sending operations for all types
+*/
+
+// Polling
+app.post('/polling_send/', function(req, res) {
+    var msg = req.body.pmsg;
+    messages.push(msg);
+    res.end();
+})
+
+
+// Long polling
 app.post('/long_polling_send/', function(req, res) {
     var msg = req.body.pmsg;
     messages.push(msg);
@@ -61,11 +86,5 @@ app.post('/long_polling_send/', function(req, res) {
     };
 })
 
+//Push
 
-app.post('/polling_send/', function(req, res) {
-    var msg = req.body.pmsg;
-    messages.push(msg);
-    res.end();
-})
-
-app.listen(3000)

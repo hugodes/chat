@@ -5,6 +5,7 @@ var lpCount = 0;
 $(document).ready(function () {
     polling_poll();
     long_polling_poll();
+    var socket = io();
 });
 
 function polling_poll () {
@@ -100,4 +101,6 @@ function long_polling_send_message () {
        data : {pmsg: pmsg},
     });
 }
+
+
 
