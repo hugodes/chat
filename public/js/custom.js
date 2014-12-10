@@ -29,7 +29,7 @@ function polling_poll () {
                if (data.count){
                    pCount = data.count;
                    var elem = $('#polling-output');
-                   elem.append(pseudo + '<div class="panel-body chat-messages" >' + data.message + '</div>');}
+                   elem.append(data.pseudo + '<div class="panel-body chat-messages" >' + data.message + '</div>');}
                polling_poll();
            },
            error: function  (resultat, status, error) {
@@ -50,7 +50,7 @@ function long_polling_poll () {
            if (data.count){
                lpCount = data.count;
                var elem = $('#long-polling-output');
-               elem.append('<div class="panel-body chat-messages" >' + data.message + '</div>');}
+               elem.append(data.pseudo + '<div class="panel-body chat-messages" >' + data.message + '</div>');}
            long_polling_poll();
        },
        error: function  (resultat, status, error) {
@@ -62,7 +62,7 @@ function long_polling_poll () {
 function push_poll () {
     socket.on('chat_message', function(msg){
     var elem = $('#push-output');
-    elem.append('<div class="panel-body chat-messages" >' + msg + '</div>');
+    elem.append(msg.pseudo + '<div class="panel-body chat-messages" >' + msg.msg + '</div>');
     });
 };
 
@@ -109,7 +109,9 @@ function polling_send_message () {
     $.ajax({
        url : 'http://127.0.0.1:3000/polling_send/',
        type : 'POST', // Le type de la requête HTTP, ici devenu POST
-       data : {pmsg: pmsg},
+       data : {
+        pmsg: pmsg,
+        pseudo: pseudo},
     });
 }
 
@@ -119,14 +121,18 @@ function long_polling_send_message () {
     $.ajax({
        url : 'http://127.0.0.1:3000/long_polling_send/',
        type : 'POST', // Le type de la requête HTTP, ici devenu POST
-       data : {pmsg: pmsg},
+       data : {
+        pmsg: pmsg,
+        pseudo: pseudo},
     });
 }
 
 function push_send_message () {
     console.log('sending message via push');
     var pmsg = $('#push-input').val();
-    socket.emit("push_send", pmsg);
+    socket.emit("push_send", {
+        msg: pmsg,
+        pseudo: pseudo});
 }
 
 
