@@ -81,7 +81,7 @@ app.post('/polling_send/', function(req, res) {
         msg: msg,
         pseudo: pseudo});
     res.end();
-    push_new_message(msg);
+    push_new_message(msg, pseudo);
 });
 
 
